@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tap_invest_app/pages/detail_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // Import Bloc
+import 'package:tap_invest_app/blocs/bond_detail/bond_detail_bloc.dart'; // Import Detail BLoC
+import 'package:tap_invest_app/blocs/bond_detail/bond_detail_event.dart'; // Import Detail Event
+import 'package:tap_invest_app/di/injection.dart'; // Import getIt
 
 class ResultTile extends StatelessWidget {
   final String isin;
@@ -63,9 +67,18 @@ class ResultTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => DetailPage(isin: isin)));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) =>
+                  getIt<BondDetailBloc>() // Use getIt to create the BLoC
+                    ..add(
+                      const BondDetailEvent.fetchDetailRequested(),
+                    ), // Add the event to start fetching
+              child: DetailPage(isin: isin), // Pass the isin to the page
+            ),
+          ),
+        );
       },
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
