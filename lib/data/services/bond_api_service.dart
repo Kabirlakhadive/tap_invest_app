@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:tap_invest_app/data/models/bond_list_response.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tap_invest_app/data/models/bond_list_response.dart';
 
 const String _bondsListUrl = 'https://eol122duf9sy4de.m.pipedream.net';
 
@@ -8,9 +8,12 @@ abstract class BondApiService {
   Future<BondListResponse> getBonds();
 }
 
+// This annotation is CRITICAL.
+@Injectable(as: BondApiService)
 class BondApiServiceImpl implements BondApiService {
   final Dio _dio;
 
+  // Make sure the constructor is exactly like this.
   BondApiServiceImpl({required Dio dio}) : _dio = dio;
 
   @override

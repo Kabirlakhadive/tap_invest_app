@@ -13,6 +13,8 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../blocs/bond_bloc.dart' as _i328;
+import '../data/services/bond_api_service.dart' as _i598;
 import 'main_module.dart' as _i300;
 
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -24,6 +26,10 @@ _i174.GetIt $initGetIt(
   final gh = _i526.GetItHelper(getIt, environment, environmentFilter);
   final mainModule = _$MainModule();
   gh.lazySingleton<_i361.Dio>(() => mainModule.dio);
+  gh.factory<_i598.BondApiService>(
+    () => _i598.BondApiServiceImpl(dio: gh<_i361.Dio>()),
+  );
+  gh.factory<_i328.BondBloc>(() => _i328.BondBloc(gh<_i598.BondApiService>()));
   return getIt;
 }
 

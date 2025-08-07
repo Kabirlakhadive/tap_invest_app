@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:tap_invest_app/blocs/simple_bloc_observer.dart';
 // import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
 import 'package:tap_invest_app/pages/home_page.dart';
 import 'package:tap_invest_app/di/injection.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tap_invest_app/blocs/bond_bloc.dart';
+import 'package:tap_invest_app/blocs/bond_event.dart';
 
 void main() {
   configureDependencies();
+  Bloc.observer = SimpleBlocObserver();
   runApp(const MyApp());
 }
 
@@ -24,7 +29,11 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xffF8F8F8),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: BlocProvider(
+        create: (context) =>
+            getIt<BondBloc>()..add(const BondEvent.fetchRequested()),
+        child: const HomePage(),
+      ),
     );
   }
 }
