@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ResultTile extends StatelessWidget {
-  // We'll require these parameters to display the data from the API later.
   final String isin;
   final String companyName;
   final String rating;
@@ -17,9 +16,7 @@ class ResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The parent Container has been removed. The widget is now transparent.
     return ListTile(
-      // contentPadding makes sure the tile content aligns nicely.
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       leading: CircleAvatar(
         radius: 22,

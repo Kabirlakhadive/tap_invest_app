@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
 import 'package:tap_invest_app/pages/home_page.dart';
+import 'package:tap_invest_app/di/injection.dart';
 
 void main() {
+  configureDependencies();
   runApp(const MyApp());
 }
 

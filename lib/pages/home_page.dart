@@ -71,7 +71,6 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              // This is the new container for all the results.
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
