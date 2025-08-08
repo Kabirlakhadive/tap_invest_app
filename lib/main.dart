@@ -8,6 +8,7 @@ import 'package:tap_invest_app/blocs/bond_bloc.dart';
 import 'package:tap_invest_app/blocs/bond_event.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   Bloc.observer = SimpleBlocObserver();
   runApp(const MyApp());
