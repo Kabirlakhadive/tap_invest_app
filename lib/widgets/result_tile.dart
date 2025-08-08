@@ -68,7 +68,7 @@ class ResultTile extends StatelessWidget {
   Widget build(BuildContext context) {
     const defaultTitleStyle = TextStyle(
       fontWeight: FontWeight.w600,
-      fontSize: 15,
+      fontSize: 12,
       color: Colors.black,
       fontFamily: 'Inter',
     );
@@ -80,7 +80,7 @@ class ResultTile extends StatelessWidget {
 
     const defaultSubtitleStyle = TextStyle(
       color: Color(0xff8E8E93),
-      fontSize: 13,
+      fontSize: 10,
       height: 1.4,
       fontFamily: 'Inter',
     );
@@ -104,18 +104,25 @@ class ResultTile extends StatelessWidget {
           ),
         );
       },
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: const Color(0xffF2F2F7),
+            Container(
+              padding: const EdgeInsets.all(4),
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade300, width: 0.4),
+              ),
               child: ClipOval(
                 child: Image.network(
                   logoUrl,
-                  width: 30,
-                  height: 30,
+                  width: 40,
+                  height: 40,
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(Icons.business, color: Colors.grey);
@@ -160,8 +167,8 @@ class ResultTile extends StatelessWidget {
             ),
             const Icon(
               Icons.arrow_forward_ios,
-              size: 14,
-              color: Color(0xffC7C7CC),
+              size: 12,
+              color: Color(0xff1447E6),
             ),
           ],
         ),

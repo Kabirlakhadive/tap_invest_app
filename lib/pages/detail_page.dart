@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:tap_invest_app/blocs/bond_detail/bond_detail_bloc.dart';
 import 'package:tap_invest_app/blocs/bond_detail/bond_detail_state.dart';
 import 'package:tap_invest_app/data/models/bond_detail_model.dart';
@@ -78,14 +79,14 @@ class _DetailPageViewState extends State<_DetailPageView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).padding.top + 24),
+            SizedBox(height: MediaQuery.of(context).padding.top + 18),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(width: 0.4, color: Colors.grey.shade300),
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               child: Image.network(
                 bondDetail.logo,
                 width: 48,
@@ -100,7 +101,11 @@ class _DetailPageViewState extends State<_DetailPageView> {
             const SizedBox(height: 10),
             Text(
               bondDetail.companyName,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'Inter',
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -110,6 +115,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
                 height: 1.5,
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
+                fontFamily: 'Inter',
               ),
             ),
             const SizedBox(height: 10),
@@ -117,26 +123,56 @@ class _DetailPageViewState extends State<_DetailPageView> {
               children: [
                 _buildTag(
                   'ISIN: ${bondDetail.isin}',
-                  const Color(0xffEEF6FF),
-                  const Color(0xff2A7BFE),
+                  const Color(0x1f2563EB),
+                  const Color(0xff2563EB),
                 ),
                 const SizedBox(width: 8),
                 _buildTag(
                   bondDetail.status.toUpperCase(),
-                  const Color(0xffEAFBF3),
+                  const Color(0x14059669),
                   const Color(0xff39B54A),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            Row(
+
+            Column(
               children: [
-                _buildTab(index: 0, title: 'ISIN Analysis'),
-                const SizedBox(width: 16),
-                _buildTab(index: 1, title: 'Pros & Cons'),
+                SizedBox(
+                  height: 38,
+                  child: Stack(
+                    children: [
+                      Row(
+                        children: [
+                          _buildTab(index: 0, title: 'ISIN Analysis'),
+                          const SizedBox(width: 16),
+                          _buildTab(index: 1, title: 'Pros & Cons'),
+                        ],
+                      ),
+
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        bottom: 0,
+
+                        left: _selectedTabIndex == 0 ? 7.0 : 113.0,
+                        child: Container(
+                          height: 2,
+                          width: 76,
+                          color: const Color(0xff1A64D7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Color(0xffE5E5EA),
+                ),
               ],
             ),
-            const Divider(height: 1, thickness: 1, color: Color(0xffE5E5EA)),
+
             const SizedBox(height: 24),
             if (_selectedTabIndex == 0)
               _buildIsinAnalysisTab(bondDetail)
@@ -162,6 +198,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
           color: textColor,
           fontWeight: FontWeight.w600,
           fontSize: 10,
+          fontFamily: 'Inter',
         ),
       ),
     );
@@ -176,25 +213,19 @@ class _DetailPageViewState extends State<_DetailPageView> {
         });
       },
       child: Container(
+        width: 90,
         color: Colors.transparent,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isSelected
-                      ? const Color(0xff1A64D7)
-                      : const Color(0xff606067),
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                ),
-              ),
-            ),
-            if (isSelected)
-              Container(height: 2, width: 76, color: const Color(0xff1A64D7)),
-          ],
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 12,
+            color: isSelected
+                ? const Color(0xff1447e6)
+                : const Color(0xff606067),
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            fontFamily: 'Inter',
+          ),
         ),
       ),
     );
@@ -208,7 +239,6 @@ class _DetailPageViewState extends State<_DetailPageView> {
         const SizedBox(height: 20),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -216,23 +246,56 @@ class _DetailPageViewState extends State<_DetailPageView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Issuer Details',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6.0, right: 6.0),
+                      child: SvgPicture.asset(
+                        'lib/assets/icons/issuer.svg',
+                        width: 18,
+                        height: 18,
+                      ),
+                    ),
+                    const Text(
+                      'Issuer Details',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
-              _buildDetailRow('Issuer Name', details.issuerName),
-              _buildDetailRow('Type of Issuer', details.typeOfIssuer),
-              _buildDetailRow('Sector', details.sector),
-              _buildDetailRow('Industry', details.industry),
-              _buildDetailRow('Issuer nature', details.issuerNature),
-              _buildDetailRow('Corporate Identity Number (CIN)', details.cin),
-              _buildDetailRow('Name of the Lead Manager', details.leadManager),
-              _buildDetailRow('Registrar', details.registrar),
-              _buildDetailRow(
-                'Name of Debenture Trustee',
-                details.debentureTrustee,
-                isLast: true,
+              const Divider(height: 10, thickness: 1, color: Color(0xffE5E5EA)),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailRow('Issuer Name', details.issuerName),
+                    _buildDetailRow('Type of Issuer', details.typeOfIssuer),
+                    _buildDetailRow('Sector', details.sector),
+                    _buildDetailRow('Industry', details.industry),
+                    _buildDetailRow('Issuer nature', details.issuerNature),
+                    _buildDetailRow(
+                      'Corporate Identity Number (CIN)',
+                      details.cin,
+                    ),
+                    _buildDetailRow(
+                      'Name of the Lead Manager',
+                      details.leadManager,
+                    ),
+                    _buildDetailRow('Registrar', details.registrar),
+                    _buildDetailRow(
+                      'Name of Debenture Trustee',
+                      details.debentureTrustee,
+                      isLast: true,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -249,7 +312,11 @@ class _DetailPageViewState extends State<_DetailPageView> {
         children: [
           Text(
             title,
-            style: const TextStyle(color: Color(0xFF1D4ED8), fontSize: 12),
+            style: const TextStyle(
+              color: Color(0xFF1D4ED8),
+              fontSize: 12,
+              fontFamily: 'Inter',
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -258,6 +325,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
               color: Color(0xFF111827),
               fontSize: 14,
               fontWeight: FontWeight.w600,
+              fontFamily: 'Inter',
             ),
           ),
         ],
@@ -279,17 +347,25 @@ class _DetailPageViewState extends State<_DetailPageView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Pros and Cons',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          const Padding(
+            padding: EdgeInsets.only(left: 6.0),
+            child: Text(
+              'Pros and Cons',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Inter',
+              ),
+            ),
           ),
           const SizedBox(height: 24),
           const Text(
             'Pros',
             style: TextStyle(
               color: Color(0xff1CAF5E),
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
+              fontFamily: 'Inter',
             ),
           ),
           const SizedBox(height: 12),
@@ -297,8 +373,8 @@ class _DetailPageViewState extends State<_DetailPageView> {
             (pro) => _buildPointItem(
               text: pro,
               icon: Icons.check,
-              iconColor: const Color(0xff1CAF5E),
-              iconBgColor: const Color(0xffE4F8EB),
+              iconColor: const Color(0xff12813D),
+              iconBgColor: const Color(0x1012813D),
             ),
           ),
           const SizedBox(height: 24),
@@ -308,13 +384,14 @@ class _DetailPageViewState extends State<_DetailPageView> {
               color: Color(0xFFB45309),
               fontSize: 14,
               fontWeight: FontWeight.w600,
+              fontFamily: 'Inter',
             ),
           ),
           const SizedBox(height: 12),
           ...cons.map(
             (con) => _buildPointItem(
               text: con,
-              icon: Icons.warning,
+              icon: Icons.priority_high_rounded,
               iconColor: const Color(0xffFF9500),
               iconBgColor: const Color(0xffFFF3E1),
             ),
@@ -346,8 +423,9 @@ class _DetailPageViewState extends State<_DetailPageView> {
               text,
               style: const TextStyle(
                 color: Color(0xff333333),
-                fontSize: 14,
+                fontSize: 12,
                 height: 1.4,
+                fontFamily: 'Inter',
               ),
             ),
           ),

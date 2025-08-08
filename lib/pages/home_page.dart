@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:tap_invest_app/blocs/bond_bloc.dart';
 import 'package:tap_invest_app/blocs/bond_event.dart';
 import 'package:tap_invest_app/blocs/bond_state.dart';
@@ -16,7 +17,7 @@ class HomePage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20.0,
-              vertical: 16.0,
+              vertical: 18.0,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,7 +25,7 @@ class HomePage extends StatelessWidget {
                 const Text(
                   'Home',
                   style: TextStyle(
-                    fontSize: 34,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -43,7 +44,6 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   child: TextField(
                     onChanged: (query) {
                       context.read<BondBloc>().add(
@@ -52,16 +52,24 @@ class HomePage extends StatelessWidget {
                     },
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0,
+                        vertical: 10.0,
                       ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Color(0xff8E8E93),
+                      prefixIcon: Container(
+                        padding: const EdgeInsets.only(
+                          left: 10.0,
+                          right: 14,
+                          top: 16,
+                          bottom: 16,
+                        ),
+                        child: SvgPicture.asset(
+                          'lib/assets/icons/search_icon.svg',
+                        ),
                       ),
                       hintText: 'Search by Issuer Name or ISIN',
                       hintStyle: const TextStyle(
-                        color: Color(0xff8E8E93),
-                        fontSize: 16,
+                        color: Color(0xff99A1AF),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
                       ),
                       filled: true,
                       fillColor: Colors.transparent,
@@ -70,19 +78,10 @@ class HomePage extends StatelessWidget {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    style: const TextStyle(color: Colors.black, fontSize: 16),
+                    style: const TextStyle(color: Colors.black, fontSize: 12),
                   ),
                 ),
                 const SizedBox(height: 30),
-                const Text(
-                  'SUGGESTED RESULTS',
-                  style: TextStyle(
-                    color: Color(0xff8E8E93),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 10),
                 BlocBuilder<BondBloc, BondState>(
                   builder: (context, state) {
                     return state.when(
@@ -92,7 +91,6 @@ class HomePage extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         ),
                       ),
-
                       loaded: (allBonds, filteredBonds, searchQuery) {
                         if (filteredBonds.isEmpty) {
                           return const Center(
@@ -103,36 +101,59 @@ class HomePage extends StatelessWidget {
                           );
                         }
 
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
+                        final String title = searchQuery.isEmpty
+                            ? 'SUGGESTED RESULTS'
+                            : 'SEARCH RESULTS';
 
-                            itemCount: filteredBonds.length,
-                            itemBuilder: (context, index) {
-                              final bond = filteredBonds[index];
-                              return ResultTile(
-                                isin: bond.isin,
-                                companyName: bond.companyName,
-                                rating: bond.rating,
-                                logoUrl: bond.logo,
+                        final int itemCount = filteredBonds.length > 3
+                            ? 3
+                            : filteredBonds.length;
 
-                                searchQuery: searchQuery,
-                              );
-                            },
-                            separatorBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.only(left: 75.0),
-                              child: Divider(
-                                height: 1,
-                                thickness: 1,
-                                color: Colors.grey.shade200,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: const TextStyle(
+                                color: Color(0xff8E8E93),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
                               ),
                             ),
-                          ),
+                            const SizedBox(height: 10),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: itemCount,
+                                itemBuilder: (context, index) {
+                                  final bond = filteredBonds[index];
+                                  return ResultTile(
+                                    isin: bond.isin,
+                                    companyName: bond.companyName,
+                                    rating: bond.rating,
+                                    logoUrl: bond.logo,
+                                    searchQuery: searchQuery,
+                                  );
+                                },
+                                separatorBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 16.0,
+                                    right: 16.0,
+                                  ),
+                                  child: Divider(
+                                    height: 1,
+                                    thickness: 1,
+                                    color: Colors.grey.shade200,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                       error: (message) => Center(

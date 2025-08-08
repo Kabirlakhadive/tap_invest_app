@@ -36,9 +36,10 @@ class _FinancialsChartState extends State<FinancialsChart> {
               const Text(
                 'COMPANY FINANCIALS',
                 style: TextStyle(
-                  color: Color(0xff8E8E93),
+                  color: Color(0xffA3A3A3),
                   fontSize: 11,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
                 ),
               ),
               _buildToggleButtons(),
@@ -76,7 +77,11 @@ class _FinancialsChartState extends State<FinancialsChart> {
 
                   child: const Text(
                     '2024',
-                    style: TextStyle(color: Color(0xffB5B5B5), fontSize: 8),
+                    style: TextStyle(
+                      color: Color(0xffB5B5B5),
+                      fontSize: 8,
+                      fontFamily: 'Inter',
+                    ),
                   ),
                 ),
               ),
@@ -86,7 +91,11 @@ class _FinancialsChartState extends State<FinancialsChart> {
                   alignment: Alignment.center,
                   child: const Text(
                     '2025',
-                    style: TextStyle(color: Color(0xffB5B5B5), fontSize: 8),
+                    style: TextStyle(
+                      color: Color(0xffB5B5B5),
+                      fontSize: 8,
+                      fontFamily: 'Inter',
+                    ),
                   ),
                 ),
               ),
@@ -147,6 +156,7 @@ class _FinancialsChartState extends State<FinancialsChart> {
                     color: Color(0xff8E8E93),
                     fontWeight: FontWeight.w500,
                     fontSize: 10,
+                    fontFamily: 'Inter',
                   ),
                 ),
               );
@@ -166,6 +176,7 @@ class _FinancialsChartState extends State<FinancialsChart> {
                   color: Color(0xff8E8E93),
                   fontWeight: FontWeight.w500,
                   fontSize: 8,
+                  fontFamily: 'Inter',
                 ),
               );
             },
@@ -221,7 +232,7 @@ class _FinancialsChartState extends State<FinancialsChart> {
     return Container(
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: const Color(0xffF2F2F7),
+        color: const Color(0xffE5E5E5),
         borderRadius: BorderRadius.circular(18.0),
         border: Border.all(width: 0.1, color: Colors.grey),
         // boxShadow: [
@@ -255,7 +266,7 @@ class _FinancialsChartState extends State<FinancialsChart> {
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.transparent,
           border: Border.all(
-            width: 0.5,
+            width: 0.1,
             color: isSelected
                 ? const Color.fromARGB(155, 146, 146, 146)
                 : Colors.transparent,
@@ -282,6 +293,7 @@ class _FinancialsChartState extends State<FinancialsChart> {
             color: isSelected
                 ? const Color(0xff333333)
                 : const Color(0xff8E8E93),
+            fontFamily: 'Inter',
           ),
         ),
       ),
