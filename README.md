@@ -2,19 +2,7 @@
 
 Hi! This is my submission for the Flutter Developer assignment.
 
-I've built the app to be a pixel-perfect match of the provided Figma designs, implementing all the required features and including bonuses like unit tests and haptic feedback.
-
----
-
-## What it Does
-
-* **Live Bond Search:** Fetches a list of bonds from the API and lets users search instantly by ISIN or company name.
-* **Dynamic Highlighting:** The search text is highlighted in real-time within the results.
-* **Detailed View:** A complete detail screen with two tabs:
-  * **ISIN Analysis:** Shows company financials in an interactive chart and other key details.
-  * **Pros & Cons:** A clean breakdown of investment benefits and risks.
-* **Interactive Chart:** Users can toggle the financial chart between **EBITDA** and **Revenue** views.
-* **Polished UX:** Haptic feedback on taps and a custom app icon make the app feel responsive and complete.
+I've built the app to be a pixel-perfect match of the provided Figma designs, implementing all the required features and including unit tests.
 
 ---
 
