@@ -9,12 +9,11 @@ import 'package:tap_invest_app/data/services/bond_api_service.dart';
 class BondBloc extends Bloc<BondEvent, BondState> {
   final BondApiService _bondApiService;
 
-  // We add a list to hold the master copy of our bonds.
   List<Bond> _allBonds = [];
 
   BondBloc(this._bondApiService) : super(const BondState.initial()) {
     on<FetchRequested>(_onFetchRequested);
-    // Register the handler for our new search event.
+
     on<SearchQueryChanged>(_onSearchQueryChanged);
   }
 
@@ -25,15 +24,12 @@ class BondBloc extends Bloc<BondEvent, BondState> {
     emit(const BondState.loading());
     try {
       final response = await _bondApiService.getBonds();
-      _allBonds = response.data; // Store the full list.
-
-      // The 'Loaded' state now requires more parameters.
+      _allBonds = response.data;
       emit(
         BondState.loaded(
           allBonds: _allBonds,
-          filteredBonds:
-              _allBonds, // Initially, the filtered list is the full list.
-          searchQuery: '', // Initially, the search query is empty.
+          filteredBonds: _allBonds,
+          searchQuery: '',
         ),
       );
     } catch (e) {
@@ -47,19 +43,17 @@ class BondBloc extends Bloc<BondEvent, BondState> {
   ) {
     final query = event.query.toLowerCase();
 
-    // Filter the master list based on the query.
     final filtered = _allBonds.where((bond) {
       final nameMatches = bond.companyName.toLowerCase().contains(query);
       final isinMatches = bond.isin.toLowerCase().contains(query);
       return nameMatches || isinMatches;
     }).toList();
 
-    // Emit a new 'Loaded' state with the updated filtered list and query.
     emit(
       BondState.loaded(
         allBonds: _allBonds,
         filteredBonds: filtered,
-        searchQuery: event.query, // Pass the original query for highlighting
+        searchQuery: event.query,
       ),
     );
   }

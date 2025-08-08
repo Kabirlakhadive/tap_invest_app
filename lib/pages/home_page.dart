@@ -43,7 +43,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // The TextField now triggers our BLoC event.
+
                   child: TextField(
                     onChanged: (query) {
                       context.read<BondBloc>().add(
@@ -92,9 +92,8 @@ class HomePage extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         ),
                       ),
-                      // The 'loaded' callback now gives us all the data we need.
+
                       loaded: (allBonds, filteredBonds, searchQuery) {
-                        // Check if the filtered list is empty.
                         if (filteredBonds.isEmpty) {
                           return const Center(
                             child: Padding(
@@ -112,7 +111,7 @@ class HomePage extends StatelessWidget {
                           child: ListView.separated(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            // We now build the list from 'filteredBonds'.
+
                             itemCount: filteredBonds.length,
                             itemBuilder: (context, index) {
                               final bond = filteredBonds[index];
@@ -121,7 +120,7 @@ class HomePage extends StatelessWidget {
                                 companyName: bond.companyName,
                                 rating: bond.rating,
                                 logoUrl: bond.logo,
-                                // We pass the search query to the tile for highlighting.
+
                                 searchQuery: searchQuery,
                               );
                             },

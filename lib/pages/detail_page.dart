@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tap_invest_app/blocs/bond_detail/bond_detail_bloc.dart';
+import 'package:tap_invest_app/blocs/bond_detail/bond_detail_event.dart';
+import 'package:tap_invest_app/blocs/bond_detail/bond_detail_state.dart';
+import 'package:tap_invest_app/data/models/bond_detail_model.dart';
+import 'package:tap_invest_app/di/injection.dart';
 
-class DetailPage extends StatefulWidget {
+class DetailPage extends StatelessWidget {
   final String isin;
 
   const DetailPage({super.key, required this.isin});
 
   @override
-  State<DetailPage> createState() => _DetailPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          getIt<BondDetailBloc>()
+            ..add(const BondDetailEvent.fetchDetailRequested()),
+      child: const _DetailPageView(),
+    );
+  }
 }
 
-class _DetailPageState extends State<DetailPage> {
-  // 0 for ISIN Analysis, 1 for Pros & Cons
+class _DetailPageView extends StatefulWidget {
+  const _DetailPageView();
+
+  @override
+  State<_DetailPageView> createState() => _DetailPageViewState();
+}
+
+class _DetailPageViewState extends State<_DetailPageView> {
   int _selectedTabIndex = 0;
 
   @override
@@ -20,93 +39,102 @@ class _DetailPageState extends State<DetailPage> {
         title: const Text('Company Detail'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        // The default back arrow is fine, but the design has a custom one.
-        // We can fine-tune this later if needed.
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // --- Header Section ---
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 24,
-                    backgroundColor: const Color(0xffF2F2F7),
-                    child: Image.network(
-                      'https://cdn.brandfetch.io/idVluv2fZa/w/200/h/200/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B',
-                      width: 32,
-                      height: 32,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.business, color: Colors.grey),
+
+      body: BlocBuilder<BondDetailBloc, BondDetailState>(
+        builder: (context, state) {
+          return state.when(
+            initial: () => const SizedBox.shrink(),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (message) => Center(child: Text(message)),
+            // When data is loaded, we pass it to our main content widget.
+            loaded: (bondDetail) => _buildContentLoaded(context, bondDetail),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildContentLoaded(BuildContext context, BondDetailModel bondDetail) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // --- Header Section ---
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: const Color(0xffF2F2F7),
+                  child: Image.network(
+                    bondDetail.logo,
+                    width: 32,
+                    height: 32,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.business, color: Colors.grey),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    bondDetail.companyName,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'Hella Infra Private Limited',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Hella Infra is a construction materials platform that enhances operational efficiency by integrating technology into the construction industry\'s value chain.',
-                style: TextStyle(color: Color(0xff606067), height: 1.5),
-              ),
-              const SizedBox(height: 20),
-
-              // --- Tags Section ---
-              Row(
-                children: [
-                  _buildTag(
-                    'ISIN: INE06E507157',
-                    const Color(0xffEEF6FF),
-                    const Color(0xff2A7BFE),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildTag(
-                    'ACTIVE',
-                    const Color(0xffEAFBF3),
-                    const Color(0xff39B54A),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // --- Custom Tab Bar ---
-              Row(
-                children: [
-                  _buildTab(index: 0, title: 'ISIN Analysis'),
-                  _buildTab(index: 1, title: 'Pros & Cons'),
-                ],
-              ),
-              const Divider(height: 1, thickness: 1, color: Color(0xffE5E5EA)),
-              const SizedBox(height: 24),
-
-              // --- Conditional Tab Content ---
-              if (_selectedTabIndex == 0)
-                _buildIsinAnalysisTab()
-              else
-                _buildProsAndConsTab(), // We will build this in a later step
-            ],
-          ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              bondDetail.description,
+              style: const TextStyle(color: Color(0xff606067), height: 1.5),
+            ),
+            const SizedBox(height: 20),
+            // --- Tags Section ---
+            Row(
+              children: [
+                _buildTag(
+                  'ISIN: ${bondDetail.isin}',
+                  const Color(0xffEEF6FF),
+                  const Color(0xff2A7BFE),
+                ),
+                const SizedBox(width: 8),
+                _buildTag(
+                  bondDetail.status,
+                  const Color(0xffEAFBF3),
+                  const Color(0xff39B54A),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            // --- Custom Tab Bar ---
+            Row(
+              children: [
+                _buildTab(index: 0, title: 'ISIN Analysis'),
+                _buildTab(index: 1, title: 'Pros & Cons'),
+              ],
+            ),
+            const Divider(height: 1, thickness: 1, color: Color(0xffE5E5EA)),
+            const SizedBox(height: 24),
+            // --- Conditional Tab Content ---
+            if (_selectedTabIndex == 0)
+              _buildIsinAnalysisTab(bondDetail)
+            else
+              _buildProsAndConsTab(bondDetail),
+          ],
         ),
       ),
     );
   }
 
-  // Helper widget for building the ISIN/Status tags
   Widget _buildTag(String text, Color bgColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -125,7 +153,6 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  // Helper widget for building a single tab
   Widget _buildTab({required int index, required String title}) {
     final isSelected = _selectedTabIndex == index;
     return GestureDetector(
@@ -149,17 +176,16 @@ class _DetailPageState extends State<DetailPage> {
             ),
           ),
           if (isSelected)
-            Container(height: 2, width: 60, color: const Color(0xff1A64D7)),
+            Container(height: 2, width: 100, color: const Color(0xff1A64D7)),
         ],
       ),
     );
   }
 
-  // --- Content for ISIN Analysis Tab ---
-  Widget _buildIsinAnalysisTab() {
+  Widget _buildIsinAnalysisTab(BondDetailModel bondDetail) {
+    final details = bondDetail.issuerDetails;
     return Column(
       children: [
-        // Financials Card
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -181,7 +207,6 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                   Container(
-                    // Placeholder for EBITDA/Revenue toggle
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: const Color(0xffF2F2F7),
@@ -195,14 +220,15 @@ class _DetailPageState extends State<DetailPage> {
                 ],
               ),
               const SizedBox(height: 16),
-              const Center(child: Text('[Graph Placeholder]')),
+              const Center(
+                child: Text('[Graph Placeholder - To be built later]'),
+              ),
               const SizedBox(height: 16),
             ],
           ),
         ),
         const SizedBox(height: 20),
 
-        // Issuer Details Card
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -217,20 +243,17 @@ class _DetailPageState extends State<DetailPage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 16),
-              _buildDetailRow('Issuer Name', 'TRUE CREDITS PRIVATE LIMITED'),
-              _buildDetailRow('Type of Issuer', 'Non PSU'),
-              _buildDetailRow('Sector', 'Financial Services'),
-              _buildDetailRow('Industry', 'Finance'),
-              _buildDetailRow('Issuer nature', 'NBFC'),
-              _buildDetailRow(
-                'Corporate Identity Number (CIN)',
-                'U65190HR2017PTC070653',
-              ),
-              _buildDetailRow('Name of the Lead Manager', '-'),
-              _buildDetailRow('Registrar', 'KFIN TECHNOLOGIES PRIVATE LIMITED'),
+              _buildDetailRow('Issuer Name', details.issuerName),
+              _buildDetailRow('Type of Issuer', details.typeOfIssuer),
+              _buildDetailRow('Sector', details.sector),
+              _buildDetailRow('Industry', details.industry),
+              _buildDetailRow('Issuer nature', details.issuerNature),
+              _buildDetailRow('Corporate Identity Number (CIN)', details.cin),
+              _buildDetailRow('Name of the Lead Manager', details.leadManager),
+              _buildDetailRow('Registrar', details.registrar),
               _buildDetailRow(
                 'Name of Debenture Trustee',
-                'IDBI Trusteeship Services Limited',
+                details.debentureTrustee,
               ),
             ],
           ),
@@ -239,7 +262,6 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  // Helper for a row in the issuer details card
   Widget _buildDetailRow(String title, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -264,8 +286,9 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  // --- Placeholder for Pros & Cons Tab Content ---
-  Widget _buildProsAndConsTab() {
-    return const Center(child: Text('Pros & Cons will be built here.'));
+  Widget _buildProsAndConsTab(BondDetailModel bondDetail) {
+    return const Center(
+      child: Text('Pros & Cons UI will be built in the next step.'),
+    );
   }
 }

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tap_invest_app/pages/detail_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // Import Bloc
-import 'package:tap_invest_app/blocs/bond_detail/bond_detail_bloc.dart'; // Import Detail BLoC
-import 'package:tap_invest_app/blocs/bond_detail/bond_detail_event.dart'; // Import Detail Event
-import 'package:tap_invest_app/di/injection.dart'; // Import getIt
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tap_invest_app/blocs/bond_detail/bond_detail_bloc.dart';
+import 'package:tap_invest_app/blocs/bond_detail/bond_detail_event.dart';
+import 'package:tap_invest_app/di/injection.dart';
 
 class ResultTile extends StatelessWidget {
   final String isin;
   final String companyName;
   final String rating;
   final String logoUrl;
-  // Add the searchQuery parameter. It can be empty.
   final String searchQuery;
 
   const ResultTile({
@@ -19,14 +18,17 @@ class ResultTile extends StatelessWidget {
     required this.companyName,
     required this.rating,
     required this.logoUrl,
-    // Make it optional with a default empty value.
     this.searchQuery = '',
   });
 
-  // This is a helper function to build the highlighted text.
-  List<TextSpan> _buildHighlightedText(String text, String query) {
+  List<TextSpan> _buildHighlightedText(
+    String text,
+    String query,
+    TextStyle defaultStyle,
+    TextStyle highlightStyle,
+  ) {
     if (query.isEmpty) {
-      return [TextSpan(text: text)];
+      return [TextSpan(text: text, style: defaultStyle)];
     }
 
     final List<TextSpan> spans = [];
@@ -38,26 +40,25 @@ class ResultTile extends StatelessWidget {
 
     while ((indexOfQuery = lowerCaseText.indexOf(lowerCaseQuery, start)) !=
         -1) {
-      // Add the text before the match
       if (indexOfQuery > start) {
-        spans.add(TextSpan(text: text.substring(start, indexOfQuery)));
+        spans.add(
+          TextSpan(
+            text: text.substring(start, indexOfQuery),
+            style: defaultStyle,
+          ),
+        );
       }
-      // Add the matched text with highlighting
       spans.add(
         TextSpan(
           text: text.substring(indexOfQuery, indexOfQuery + query.length),
-          style: const TextStyle(
-            backgroundColor: Color(0xffFFFBEB), // Yellow highlight color
-            fontWeight: FontWeight.w900, // Make highlighted text bolder
-          ),
+          style: highlightStyle,
         ),
       );
       start = indexOfQuery + query.length;
     }
 
-    // Add the remaining text after the last match
     if (start < text.length) {
-      spans.add(TextSpan(text: text.substring(start)));
+      spans.add(TextSpan(text: text.substring(start), style: defaultStyle));
     }
 
     return spans;
@@ -65,65 +66,97 @@ class ResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const defaultTitleStyle = TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 15,
+      color: Colors.black,
+      fontFamily: 'Inter',
+    );
+
+    final highlightTitleStyle = defaultTitleStyle.copyWith(
+      backgroundColor: const Color(0xffFFFBEB),
+      fontWeight: FontWeight.w900,
+    );
+
+    const defaultSubtitleStyle = TextStyle(
+      color: Color(0xff8E8E93),
+      fontSize: 13,
+      height: 1.4,
+      fontFamily: 'Inter',
+    );
+
+    final highlightSubtitleStyle = defaultSubtitleStyle.copyWith(
+      backgroundColor: const Color(0xffFFFBEB),
+      color: Colors.black,
+      fontWeight: FontWeight.w600,
+    );
+
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => BlocProvider(
-              create: (context) =>
-                  getIt<BondDetailBloc>() // Use getIt to create the BLoC
-                    ..add(
-                      const BondDetailEvent.fetchDetailRequested(),
-                    ), // Add the event to start fetching
-              child: DetailPage(isin: isin), // Pass the isin to the page
-            ),
-          ),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => DetailPage(isin: isin)));
       },
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: CircleAvatar(
-          radius: 22,
-          backgroundColor: const Color(0xffF2F2F7),
-          child: Image.network(
-            logoUrl,
-            width: 30,
-            height: 30,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.business, color: Colors.grey);
-            },
-          ),
-        ),
-        // Use RichText to allow for different text styles in one line.
-        title: RichText(
-          text: TextSpan(
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 15,
-              color: Colors.black,
-              fontFamily: 'Inter', // Ensure font matches
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: const Color(0xffF2F2F7),
+              child: ClipOval(
+                child: Image.network(
+                  logoUrl,
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.business, color: Colors.grey);
+                  },
+                ),
+              ),
             ),
-            children: _buildHighlightedText(isin, searchQuery),
-          ),
-        ),
-        subtitle: RichText(
-          text: TextSpan(
-            style: const TextStyle(
-              color: Color(0xff8E8E93),
-              fontSize: 13,
-              height: 1.4,
-              fontFamily: 'Inter', // Ensure font matches
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      children: _buildHighlightedText(
+                        isin,
+                        searchQuery,
+                        defaultTitleStyle,
+                        highlightTitleStyle,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '$rating • ',
+                          style: defaultSubtitleStyle,
+                        ),
+                        ..._buildHighlightedText(
+                          companyName,
+                          searchQuery,
+                          defaultSubtitleStyle,
+                          highlightSubtitleStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            children: [
-              TextSpan(text: '$rating • '),
-              ..._buildHighlightedText(companyName, searchQuery),
-            ],
-          ),
-        ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Color(0xffC7C7CC),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+              color: Color(0xffC7C7CC),
+            ),
+          ],
         ),
       ),
     );
