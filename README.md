@@ -29,18 +29,6 @@ Here's a quick look at the technical choices I made:
 
 ---
 
-## Screenshots
-
-| Home Screen | Search Results |
-| :---: | :---: |
-| *(Your home page screenshot here)* | *(Your search results screenshot here)* |
-| **Detail (Analysis)** | **Detail (Pros & Cons)** |
-| *(Your detail page screenshot here)* | *(Your pros & cons screenshot here)* |
-
-*You can also link to a short screen recording of the app flow here.*
-
----
-
 ## How to Run
 
 1. **Clone the repo and install dependencies:**
