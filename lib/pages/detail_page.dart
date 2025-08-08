@@ -29,17 +29,33 @@ class _DetailPageViewState extends State<_DetailPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
-          'Company Detail',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+        automaticallyImplyLeading: false,
+        title: null,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Icon(Icons.arrow_back, color: Colors.black, size: 20),
+              ),
+            ),
+          ),
         ),
       ),
       body: BlocBuilder<BondDetailBloc, BondDetailState>(
@@ -58,38 +74,33 @@ class _DetailPageViewState extends State<_DetailPageView> {
   Widget _buildContentLoaded(BuildContext context, BondDetailModel bondDetail) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: const Color(0xffF2F2F7),
-                  child: ClipOval(
-                    child: Image.network(
-                      bondDetail.logo,
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.business, color: Colors.grey),
-                    ),
-                  ),
+            SizedBox(height: MediaQuery.of(context).padding.top + 24),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(width: 0.4, color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(4),
+              child: Image.network(
+                bondDetail.logo,
+                width: 48,
+                height: 48,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.business,
+                  color: Color.fromARGB(255, 255, 255, 255),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    bondDetail.companyName,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              bondDetail.companyName,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 16),
             Text(
@@ -97,10 +108,11 @@ class _DetailPageViewState extends State<_DetailPageView> {
               style: const TextStyle(
                 color: Color(0xff606067),
                 height: 1.5,
-                fontSize: 14,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Row(
               children: [
                 _buildTag(
@@ -149,7 +161,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
         style: TextStyle(
           color: textColor,
           fontWeight: FontWeight.w600,
-          fontSize: 12,
+          fontSize: 10,
         ),
       ),
     );
@@ -172,7 +184,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 12,
                   color: isSelected
                       ? const Color(0xff1A64D7)
                       : const Color(0xff606067),
@@ -181,7 +193,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
               ),
             ),
             if (isSelected)
-              Container(height: 2, width: 60, color: const Color(0xff1A64D7)),
+              Container(height: 2, width: 76, color: const Color(0xff1A64D7)),
           ],
         ),
       ),
@@ -206,7 +218,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
             children: [
               const Text(
                 'Issuer Details',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 20),
               _buildDetailRow('Issuer Name', details.issuerName),
@@ -237,13 +249,13 @@ class _DetailPageViewState extends State<_DetailPageView> {
         children: [
           Text(
             title,
-            style: const TextStyle(color: Color(0xff8E8E93), fontSize: 13),
+            style: const TextStyle(color: Color(0xFF1D4ED8), fontSize: 12),
           ),
           const SizedBox(height: 4),
           Text(
             value.isEmpty ? '-' : value,
             style: const TextStyle(
-              color: Color(0xff333333),
+              color: Color(0xFF111827),
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -254,8 +266,93 @@ class _DetailPageViewState extends State<_DetailPageView> {
   }
 
   Widget _buildProsAndConsTab(BondDetailModel bondDetail) {
-    return const Center(
-      child: Text('Pros & Cons UI will be built in the next step.'),
+    final pros = bondDetail.prosAndCons.pros;
+    final cons = bondDetail.prosAndCons.cons;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Pros and Cons',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Pros',
+            style: TextStyle(
+              color: Color(0xff1CAF5E),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...pros.map(
+            (pro) => _buildPointItem(
+              text: pro,
+              icon: Icons.check,
+              iconColor: const Color(0xff1CAF5E),
+              iconBgColor: const Color(0xffE4F8EB),
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Cons',
+            style: TextStyle(
+              color: Color(0xFFB45309),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...cons.map(
+            (con) => _buildPointItem(
+              text: con,
+              icon: Icons.warning,
+              iconColor: const Color(0xffFF9500),
+              iconBgColor: const Color(0xffFFF3E1),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPointItem({
+    required String text,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBgColor,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 12,
+            backgroundColor: iconBgColor,
+            child: Icon(icon, size: 14, color: iconColor),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Color(0xff333333),
+                fontSize: 14,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
