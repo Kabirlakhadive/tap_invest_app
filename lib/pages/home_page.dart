@@ -26,8 +26,9 @@ class HomePage extends StatelessWidget {
                   'Home',
                   style: TextStyle(
                     fontSize: 26,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                     color: Colors.black,
+                    fontFamily: 'Inter',
                   ),
                 ),
                 const SizedBox(height: 20),
