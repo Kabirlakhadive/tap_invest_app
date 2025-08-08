@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tap_invest_app/data/models/financials_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:tap_invest_app/data/models/monthly_data_model.dart';
@@ -256,6 +257,7 @@ class _FinancialsChartState extends State<FinancialsChart> {
     final bool isFirstButton = text == 'EBITDA';
     return GestureDetector(
       onTap: () {
+        HapticFeedback.lightImpact();
         setState(() {
           _showEbitda = isFirstButton;
         });

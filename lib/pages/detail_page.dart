@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tap_invest_app/blocs/bond_detail/bond_detail_bloc.dart';
@@ -39,7 +40,10 @@ class _DetailPageViewState extends State<_DetailPageView> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
           child: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              Navigator.of(context).pop();
+            },
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -208,6 +212,7 @@ class _DetailPageViewState extends State<_DetailPageView> {
     final isSelected = _selectedTabIndex == index;
     return GestureDetector(
       onTap: () {
+        HapticFeedback.lightImpact();
         setState(() {
           _selectedTabIndex = index;
         });

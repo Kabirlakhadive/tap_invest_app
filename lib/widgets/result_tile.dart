@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tap_invest_app/pages/detail_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tap_invest_app/blocs/bond_detail/bond_detail_bloc.dart';
@@ -93,6 +94,7 @@ class ResultTile extends StatelessWidget {
 
     return InkWell(
       onTap: () {
+        HapticFeedback.mediumImpact();
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => BlocProvider(
