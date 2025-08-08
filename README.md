@@ -29,32 +29,4 @@ Here's a quick look at the technical choices I made:
 
 ---
 
-## How to Run
-
-1. **Clone the repo and install dependencies:**
-
-    ```bash
-    flutter pub get
-    ```
-
-2. **Run the code generator:**
-
-    ```bash
-    flutter pub run build_runner build --delete-conflicting-outputs
-    ```
-
-3. **Run the app:**
-
-    ```bash
-    flutter run
-    ```
-
-4. **Run the tests:**
-
-    ```bash
-    flutter test
-    ```
-
----
-
 Thank you for the opportunity! I really enjoyed building this and look forward to hearing from you.
