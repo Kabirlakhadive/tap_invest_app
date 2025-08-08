@@ -130,7 +130,6 @@ class _FinancialsChartState extends State<FinancialsChart> {
       alignment: BarChartAlignment.center,
       borderData: FlBorderData(show: false),
       gridData: FlGridData(
-        show: true,
         horizontalInterval: maxValue / 6,
         getDrawingHorizontalLine: (value) {
           return const FlLine(color: Color(0xffEAEAEA), strokeWidth: 1);

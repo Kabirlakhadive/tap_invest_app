@@ -247,7 +247,12 @@ class _DetailPageViewState extends State<_DetailPageView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.only(
+                  left: 14.0,
+                  right: 14,
+                  top: 16,
+                  bottom: 10,
+                ),
                 child: Row(
                   children: [
                     Padding(
