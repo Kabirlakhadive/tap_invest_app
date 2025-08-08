@@ -93,9 +93,16 @@ class ResultTile extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (_) => DetailPage(isin: isin)));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => BlocProvider(
+              create: (context) =>
+                  getIt<BondDetailBloc>()
+                    ..add(const BondDetailEvent.fetchDetailRequested()),
+              child: DetailPage(isin: isin),
+            ),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
