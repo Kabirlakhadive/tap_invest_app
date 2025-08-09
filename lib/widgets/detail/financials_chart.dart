@@ -127,14 +127,28 @@ class _FinancialsChartState extends State<FinancialsChart> {
     final revenueLightColorForBackground = const Color(0xffE2EFFF);
 
     return BarChartData(
-      maxY: maxValue,
+      maxY: maxValue + 2,
+
       alignment: BarChartAlignment.center,
       borderData: FlBorderData(show: false),
       gridData: FlGridData(
+        show: true,
+        drawVerticalLine: false,
+        drawHorizontalLine: true,
         horizontalInterval: maxValue / 6,
         getDrawingHorizontalLine: (value) {
           return const FlLine(color: Color(0xffEAEAEA), strokeWidth: 1);
         },
+      ),
+      extraLinesData: ExtraLinesData(
+        verticalLines: [
+          VerticalLine(
+            x: 4.5,
+            color: Colors.grey[300],
+            strokeWidth: 1,
+            dashArray: [5, 5], // remove this if you want a solid line
+          ),
+        ],
       ),
       titlesData: FlTitlesData(
         show: true,
